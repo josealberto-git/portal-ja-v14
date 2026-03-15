@@ -1,158 +1,585 @@
-<!-- HTML igual ao anterior até a seção de scripts -->
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>PORTAL JA</title>
+
+<style>
+
+body{
+margin:0;
+font-family:monospace;
+background:black;
+color:#00ff9c;
+}
+
+header{
+background:#111;
+padding:15px;
+font-size:22px;
+position:fixed;
+width:100%;
+top:0;
+box-shadow:0 0 10px #00ff9c;
+z-index:10;
+}
+
+.sidebar{
+position:fixed;
+top:60px;
+left:0;
+width:220px;
+height:100%;
+background:#111;
+border-right:1px solid #00ff9c;
+}
+
+.sidebar li{
+list-style:none;
+padding:15px;
+cursor:pointer;
+}
+
+.sidebar li:hover{
+background:#00ff9c;
+color:black;
+}
+
+.section{
+margin-left:230px;
+padding:30px;
+display:none;
+}
+
+.active{
+display:block;
+}
+
+.card{
+border:1px solid #00ff9c;
+padding:15px;
+margin:10px;
+width:260px;
+display:inline-block;
+}
+
+input,textarea,select{
+width:100%;
+padding:8px;
+margin-bottom:10px;
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+}
+
+button{
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+padding:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#00ff9c;
+color:black;
+}
+
+iframe{
+border:1px solid #00ff9c;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<header>PORTAL JA</header>
+
+<div class="sidebar">
+
+<li onclick="mostrar('login')">🔑 Login</li>
+<li onclick="mostrar('cliente')">👤 Cliente</li>
+<li id="menuAdmin" onclick="mostrar('admin')" style="display:none">⚙ Admin</li>
+<li onclick="mostrar('tools')">🛠 Ferramentas</li>
+<li onclick="mostrar('games')">🎮 Jogos</li>
+<li onclick="mostrar('yt')">🎵 YouTube MP3</li>
+<li onclick="mostrar('chat')">🤖 Chat</li>
+
+</div>
+
+<!-- LOGIN -->
+
+<div id="login" class="section active">
+
+<h2>Login</h2>
+
+<input id="user" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+
+<button onclick="login()">Entrar</button>
+
+<p id="status"></p>
+
+<hr>
+
+<h3>📩 Esqueci a senha</h3>
+
+<input id="userReset" placeholder="Seu usuário">
+
+<button onclick="solicitarSenha()">Enviar solicitação</button>
+
+<hr>
+
+<p>📞 Suporte: (64) 99989-0702</p>
+<p>Email: josealbertovilelalopes.tic@gmail.com</p>
+
+</div>
+
+<!-- CLIENTE -->
+
+<div id="cliente" class="section">
+
+<h2>Área do Cliente</h2>
+
+<div class="card">
+
+Minecraft
+
+<button onclick="abrir('https://classic.minecraft.net')">
+
+Abrir
+
+</button>
+
+</div>
+
+<div class="card">
+
+Mini Navegador
+
+<input id="urlNav">
+
+<button onclick="nav()">Abrir</button>
+
+<iframe id="frame" style="width:100%;height:200px;"></iframe>
+
+</div>
+
+</div>
+
+<!-- ADMIN -->
+
+<div id="admin" class="section">
+
+<h2>Painel Admin</h2>
+
+<h3>Permissões</h3>
+
+<ul>
+<li>MASTER: criar, deletar e ver senha</li>
+<li>ADMIN: redefinir senha</li>
+<li>CLIENTE: sem acesso</li>
+</ul>
+
+<hr>
+
+<h3>Criar usuário</h3>
+
+<input id="novoUser">
+
+<input id="novaSenha">
+
+<select id="tipoUser">
+
+<option value="cliente">cliente</option>
+<option value="admin">admin</option>
+
+</select>
+
+<button onclick="criarUser()">Criar</button>
+
+<hr>
+
+<h3>Redefinir senha</h3>
+
+<input id="resetUser">
+
+<input id="resetSenha">
+
+<button onclick="resetar()">Redefinir</button>
+
+<hr>
+
+<h3>Deletar usuário</h3>
+
+<input id="delUser">
+
+<button onclick="deletar()">Deletar</button>
+
+<hr>
+
+<h3>Usuários</h3>
+
+<ul id="listaUsers"></ul>
+
+<hr>
+
+<h3>IPs</h3>
+
+<ul id="ips"></ul>
+
+<hr>
+
+<h3>Solicitações</h3>
+
+<ul id="solicitacoes"></ul>
+
+</div>
+
+<!-- FERRAMENTAS -->
+
+<div id="tools" class="section">
+
+<h2>Ferramentas</h2>
+
+<div class="card">
+
+IP
+
+<button onclick="ip()">Mostrar</button>
+
+<p id="ip"></p>
+
+</div>
+
+<div class="card">
+
+Calculadora
+
+<input id="n1">
+<input id="n2">
+
+<button onclick="calc('+')">+</button> <button onclick="calc('-')">-</button> <button onclick="calc('*')">*</button> <button onclick="calc('/')">/</button>
+
+<p id="res"></p>
+
+</div>
+
+</div>
+
+<!-- JOGOS -->
+
+<div id="games" class="section">
+
+<h2>Snake</h2>
+
+<canvas id="snake" width="400" height="400"></canvas>
+
+</div>
+
+<!-- YOUTUBE -->
+
+<div id="yt" class="section">
+
+<h2>YouTube → MP3</h2>
+
+<input id="ytlink">
+
+<button onclick="yt()">Converter</button>
+
+<p id="ytres"></p>
+
+</div>
+
+<!-- CHAT -->
+
+<div id="chat" class="section">
+
+<h2>Mini Chat</h2>
+
+<div id="chatArea"></div>
+
+<input id="msg">
+
+<button onclick="enviar()">Enviar</button>
+
+</div>
+
 <script>
-// MATRIX
-let canvas=document.getElementById("matrix"), ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-let letters="0123456789ABCDEF", font=16, columns=Math.floor(canvas.width/font), drops=[];
-for(let x=0;x<columns;x++) drops[x]=1;
-function draw(){
-ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="#0f0"; ctx.font=font+"px monospace";
-for(let i=0;i<drops.length;i++){
-ctx.fillText(letters[Math.floor(Math.random()*letters.length)],i*font,drops[i]*font);
-drops[i]++;
-if(drops[i]*font>canvas.height && Math.random()>0.975) drops[i]=0;
-}}
-setInterval(draw,50);
 
-// USUÁRIOS
-let usuarios = [
-{user:"master", senha:"123", tipo:"master"},
-{user:"admin", senha:"123", tipo:"admin"},
-{user:"cliente", senha:"123", tipo:"cliente"}
-];
-let usuarioLogado = null;
-let solicitacoes = [];
+let usuarios=[
 
-// MOSTRAR SEÇÃO
+{user:"master",senha:"123",tipo:"master"},
+
+{user:"admin",senha:"123",tipo:"admin"},
+
+{user:"cliente",senha:"123",tipo:"cliente"}
+
+]
+
+let usuarioLogado=null
+
+let solicitacoes=[]
+
+let ips=[]
+
 function mostrar(id){
-if(id!="login" && !usuarioLogado){alert("Faça login"); return;}
-document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-if(usuarioLogado && usuarioLogado.tipo!=="cliente") document.getElementById("menuAdmin").style.display="block";
-else document.getElementById("menuAdmin").style.display="none";
-if(id==="admin") atualizarLista();
-if(id==="admin") mostrarSolicitacoes();
+
+if(id!="login" && !usuarioLogado){
+
+alert("Faça login")
+
+return
+
 }
 
-// LOGIN
+document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
+
+document.getElementById(id).classList.add("active")
+
+}
+
 function login(){
-let u=document.getElementById("user").value.trim();
-let s=document.getElementById("senha").value.trim();
-let encontrado=usuarios.find(x=>x.user===u && x.senha===s);
-if(!encontrado){document.getElementById("status").innerText="Login inválido"; return;}
-usuarioLogado=encontrado;
-document.getElementById("status").innerText="Bem-vindo "+u;
-mostrar("cliente");
+
+let u=user.value
+
+let s=senha.value
+
+let achou=usuarios.find(x=>x.user==u && x.senha==s)
+
+if(!achou){
+
+status.innerText="login inválido"
+
+return
+
 }
 
-// LOGOUT
-function logout(){usuarioLogado=null; mostrar("login");}
+usuarioLogado=achou
 
-// ESQUECI SENHA
-function esqueciSenha(){
-let u=document.getElementById("user").value.trim();
-if(!u){alert("Digite seu usuário"); return;}
-if(!usuarios.find(x=>x.user===u)){alert("Usuário não existe"); return;}
-solicitacoes.push({cliente:u, alvo:u});
-document.getElementById("solicitacoesLogin").innerHTML="Solicitação enviada para ADM/Master!";
-alert("Solicitação enviada para ADM/Master.");
+status.innerText="Bem vindo "+u
+
+if(achou.tipo!="cliente")
+
+menuAdmin.style.display="block"
+
+fetch("https://api.ipify.org?format=json")
+
+.then(r=>r.json())
+
+.then(d=>{
+
+ips.push(u+" - "+d.ip)
+
+document.getElementById("ips").innerHTML=ips.map(x=>"<li>"+x+"</li>").join("")
+
+})
+
+atualizar()
+
+mostrar("cliente")
+
 }
 
-// CRIAR USUÁRIO (Apenas MASTER)
-function criarUsuario(){
-if(!usuarioLogado || usuarioLogado.tipo!=="master"){alert("Apenas MASTER pode criar usuários"); return;}
-let u=document.getElementById("novoUser").value.trim();
-let s=document.getElementById("novaSenha").value.trim();
-let t=document.getElementById("tipoUser").value;
-if(!u||!s){alert("Preencha tudo"); return;}
-if(usuarios.find(x=>x.user===u)){alert("Usuário já existe"); return;}
-usuarios.push({user:u,senha:s,tipo:t});
-alert("Usuário criado");
-document.getElementById("novoUser").value="";
-document.getElementById("novaSenha").value="";
-atualizarLista();
+function criarUser(){
+
+if(usuarioLogado.tipo!="master"){
+
+alert("apenas master")
+
+return
+
 }
 
-// DELETAR USUÁRIO (Apenas MASTER)
-function deletarUsuario(){
-if(!usuarioLogado || usuarioLogado.tipo!=="master"){alert("Apenas MASTER pode deletar usuários"); return;}
-let alvo=document.getElementById("delUser").value.trim();
-if(!alvo){alert("Digite usuário"); return;}
-if(alvo===usuarioLogado.user){alert("Não pode deletar você mesmo"); return;}
-let index=usuarios.findIndex(u=>u.user===alvo);
-if(index===-1){alert("Usuário não encontrado"); return;}
-usuarios.splice(index,1);
-alert("Usuário deletado: "+alvo);
-document.getElementById("delUser").value="";
-atualizarLista();
+usuarios.push({
+
+user:novoUser.value,
+
+senha:novaSenha.value,
+
+tipo:tipoUser.value
+
+})
+
+atualizar()
+
 }
 
-// REDIFINIR SENHA
-function resetarSenha(){
-if(!usuarioLogado){alert("Faça login"); return;}
-let u=document.getElementById("resetUser").value.trim();
-let s=document.getElementById("resetSenha").value.trim();
-if(!u||!s){alert("Preencha os campos"); return;}
-let alvo=usuarios.find(x=>x.user===u);
-if(!alvo){alert("Usuário não encontrado"); return;}
-if(usuarioLogado.tipo==="admin" && alvo.tipo==="master"){alert("Admin não pode redefinir senha de MASTER"); return;}
-if(usuarioLogado.tipo==="cliente"){alert("Cliente não pode redefinir senha"); return;}
-alvo.senha=s;
-alert("Senha redefinida para "+s);
-document.getElementById("resetUser").value="";
-document.getElementById("resetSenha").value="";
-atualizarLista();
+function resetar(){
+
+let u=usuarios.find(x=>x.user==resetUser.value)
+
+if(!u)return
+
+if(usuarioLogado.tipo=="admin" && u.tipo=="master"){
+
+alert("admin não pode")
+
+return
+
 }
 
-// SOLICITAÇÃO CLIENTE
-function solicitarRedefinicao(){
-if(!usuarioLogado || usuarioLogado.tipo!=="cliente"){alert("Apenas clientes podem solicitar"); return;}
-let alvo=document.getElementById("reqUser").value.trim();
-if(!alvo){alert("Digite um usuário"); return;}
-if(!usuarios.find(x=>x.user===alvo)){alert("Usuário não existe"); return;}
-solicitacoes.push({cliente:usuarioLogado.user, alvo:alvo});
-document.getElementById("solicitacoes").innerHTML += "<p>Solicitação enviada para: "+alvo+"</p>";
-document.getElementById("reqUser").value="";
+u.senha=resetSenha.value
+
 }
 
-// MOSTRAR SOLICITAÇÕES ADMIN
-function mostrarSolicitacoes(){
-let div=document.getElementById("requestsAdmin"); div.innerHTML="";
-solicitacoes.forEach((s,i)=>{
-div.innerHTML += `<p>${s.cliente} solicitou redefinição para ${s.alvo} <button onclick="resetSenhaSolic('${s.alvo}',${i})">Resetar para 123</button></p>`;
-});
+function deletar(){
+
+if(usuarioLogado.tipo!="master")return
+
+usuarios=usuarios.filter(x=>x.user!=delUser.value)
+
+atualizar()
+
 }
 
-// RESET SENHA PELO ADMIN/MASTER
-function resetSenhaSolic(user,i){
-let u=usuarios.find(x=>x.user===user);
-if(!u){alert("Usuário não encontrado"); return;}
-if(usuarioLogado.tipo==="admin" && u.tipo==="master"){alert("Admin não pode resetar MASTER"); return;}
-u.senha="123"; 
-alert("Senha resetada para 123");
-solicitacoes.splice(i,1);
-mostrarSolicitacoes();
-atualizarLista();
+function atualizar(){
+
+listaUsers.innerHTML=""
+
+usuarios.forEach(u=>{
+
+listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"
+
+})
+
 }
 
-// ATUALIZAR LISTA DE USUÁRIOS
-function atualizarLista(){
-let ul=document.getElementById("listaUsers"); ul.innerHTML="";
-usuarios.forEach(u=>{ul.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>";});
+function solicitarSenha(){
+
+solicitacoes.push(userReset.value)
+
+document.getElementById("solicitacoes").innerHTML=
+
+solicitacoes.map(x=>"<li>"+x+"</li>").join("")
+
+alert("Solicitação enviada")
+
 }
 
-// FERRAMENTAS CLIENTE
-function ip(){document.getElementById("ip").innerText="Seu IP: 192.168.0.1 (simulado)";}
+function abrir(url){
+
+window.open(url)
+
+}
+
+function nav(){
+
+frame.src=urlNav.value
+
+}
+
+function ip(){
+
+fetch("https://api.ipify.org?format=json")
+
+.then(r=>r.json())
+
+.then(d=>{
+
+document.getElementById("ip").innerText=d.ip
+
+})
+
+}
+
 function calc(op){
-let a=parseFloat(document.getElementById("n1").value);
-let b=parseFloat(document.getElementById("n2").value);
-let r=0;
-if(op=='+') r=a+b;
-if(op=='-') r=a-b;
-if(op=='*') r=a*b;
-if(op=='/') r=a/b;
-document.getElementById("res").innerText=r;
+
+let a=parseFloat(n1.value)
+
+let b=parseFloat(n2.value)
+
+if(op=='+')res.innerText=a+b
+
+if(op=='-')res.innerText=a-b
+
+if(op=='*')res.innerText=a*b
+
+if(op=='/')res.innerText=a/b
+
 }
-function abrirNav(){document.getElementById("iframeNav").src=document.getElementById("urlNav").value;}
+
+function yt(){
+
+let link=ytlink.value
+
+let id=link.split("v=")[1]
+
+ytres.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar</a>"
+
+}
+
+function enviar(){
+
+chatArea.innerHTML+="<p>Você: "+msg.value+"</p>"
+
+chatArea.innerHTML+="<p>IA: Olá!</p>"
+
+msg.value=""
+
+}
+
+/* MATRIX */
+
+let canvas=document.getElementById("matrix")
+
+let ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+
+canvas.height=window.innerHeight
+
+let letters="01ABCDEF"
+
+let font=16
+
+let columns=canvas.width/font
+
+let drops=[]
+
+for(let i=0;i<columns;i++)drops[i]=1
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.05)"
+
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#0f0"
+
+ctx.font=font+"px monospace"
+
+for(let i=0;i<drops.length;i++){
+
+let text=letters[Math.floor(Math.random()*letters.length)]
+
+ctx.fillText(text,i*font,drops[i]*font)
+
+drops[i]++
+
+if(drops[i]*font>canvas.height && Math.random()>0.95)
+
+drops[i]=0
+
+}
+
+}
+
+setInterval(draw,50)
+
 </script>
+
+</body>
+</html>
