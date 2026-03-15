@@ -1,0 +1,9 @@
+PortalJA_V13/
+│
+├── index.html
+├── css/
+│   └── style.css
+├── js/
+│   └── script.js
+└── img/
+    └── (coloque suas imagens aqui)

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>PORTAL JA V14</title>
+
+<style>
+body{
+margin:0;
+background:#0b0b0b;
+color:#00ff9c;
+font-family:monospace;
+}
+header{
+background:#111;
+padding:15px;
+font-size:22px;
+box-shadow:0 0 10px #00ff9c;
+position:fixed;
+width:100%;
+top:0;
+}
+.sidebar{
+position:fixed;
+top:60px;
+left:0;
+width:220px;
+height:100%;
+background:#111;
+border-right:1px solid #00ff9c;
+}
+.sidebar li{
+list-style:none;
+padding:15px;
+cursor:pointer;
+}
+.sidebar li:hover{
+background:#00ff9c;
+color:black;
+}
+.section{
+margin-left:230px;
+padding:30px;
+display:none;
+}
+.active{
+display:block;
+}
+input,textarea,select{
+width:100%;
+padding:8px;
+margin-bottom:10px;
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+}
+button{
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+padding:8px;
+cursor:pointer;
+}
+button:hover{
+background:#00ff9c;
+color:black;
+}
+#chatArea,#term{
+height:200px;
+overflow:auto;
+background:#111;
+padding:10px;
+margin-bottom:10px;
+}
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<header>PORTAL JA V14</header>
+
+<div class="sidebar">
+<li onclick="mostrar('login')">🔑 Login</li>
+<li onclick="mostrar('cliente')">👤 Cliente</li>
+<li onclick="mostrar('admin')">⚙ Admin</li>
+<li onclick="mostrar('terminal')">💻 Terminal</li>
+<li onclick="mostrar('chat')">🤖 Chat</li>
+<li onclick="mostrar('jogo')">🎮 Snake</li>
+<li onclick="logout()">🚪 Logout</li>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="section active">
+<h2>Login</h2>
+<input id="user" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+<p id="status"></p>
+</div>
+
+<!-- CLIENTE -->
+<div id="cliente" class="section">
+<h2>Área do Cliente</h2>
+<button onclick="abrir('https://classic.minecraft.net')">Abrir Minecraft</button>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="section">
+<h2>Painel Admin</h2>
+<h3>Criar usuário</h3>
+<input id="novoUser" placeholder="Usuário">
+<input id="novaSenha" placeholder="Senha">
+<select id="tipoUser">
+<option value="cliente">Cliente</option>
+<option value="admin">Admin</option>
+<option value="master">Master</option>
+</select>
+<button onclick="criarUsuario()">Criar</button>
+<h3>Usuários</h3>
+<ul id="listaUsers"></ul>
+</div>
+
+<!-- TERMINAL -->
+<div id="terminal" class="section">
+<h2>Terminal</h2>
+<div id="term"></div>
+<input id="cmd" placeholder="Digite comando">
+<button onclick="run()">Executar</button>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="section">
+<h2>Chat IA</h2>
+<div id="chatArea"></div>
+<textarea id="pergunta"></textarea>
+<button onclick="chat()">Enviar</button>
+</div>
+
+<!-- JOGO -->
+<div id="jogo" class="section">
+<h2>Snake</h2>
+<canvas id="snake" width="400" height="400"></canvas>
+</div>
+
+<script>
+
+/* USUÁRIOS */
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
+{user:"master",senha:"123",tipo:"master"}
+];
+let usuarioLogado = null;
+
+function salvar(){
+localStorage.setItem("usuarios",JSON.stringify(usuarios));
+}
+
+/* LOGIN CORRIGIDO */
+function login(){
+  let u = document.getElementById("user").value.trim();
+  let s = document.getElementById("senha").value.trim();
+  let encontrado = usuarios.find(x => x.user === u && x.senha === s);
+
+  if(!encontrado){
+    document.getElementById("status").innerText = "Login inválido";
+    return;
+  }
+
+  usuarioLogado = encontrado;
+  document.getElementById("status").innerText = "Bem-vindo " + u;
+  mostrar("cliente");
+}
+
+/* LOGOUT */
+function logout(){
+usuarioLogado = null;
+mostrar("login");
+}
+
+/* MOSTRAR SEÇÃO */
+function mostrar(id){
+if(id!="login" && !usuarioLogado){
+alert("Faça login");
+return;
+}
+document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+if(id==="admin") atualizarLista();
+}
+
+/* CRIAR USUÁRIO */
+function criarUsuario(){
+if(usuarioLogado.tipo!=="master"){
+alert("Apenas MASTER");
+return;
+}
+let u = document.getElementById("novoUser").value.trim();
+let s = document.getElementById("novaSenha").value.trim();
+let t = document.getElementById("tipoUser").value;
+
+if(!u || !s){
+alert("Preencha tudo");
+return;
+}
+
+let existe = usuarios.find(x => x.user === u);
+if(existe){
+alert("Usuário já existe");
+return;
+}
+
+usuarios.push({user:u,senha:s,tipo:t});
+salvar();
+alert("Usuário criado");
+document.getElementById("novoUser").value = "";
+document.getElementById("novaSenha").value = "";
+atualizarLista();
+}
+
+/* LISTA DE USUÁRIOS */
+function atualizarLista(){
+document.getElementById("listaUsers").innerHTML = "";
+usuarios.forEach(u=>{
+document.getElementById("listaUsers").innerHTML += "<li>"+u.user+" ("+u.tipo+")</li>";
+});
+}
+
+/* TERMINAL */
+function run(){
+let c = document.getElementById("cmd").value.toLowerCase();
+let r = "Comando desconhecido";
+if(c==="help") r = "help, hora, data, users";
+if(c==="hora") r = new Date().toLocaleTimeString();
+if(c==="data") r = new Date().toLocaleDateString();
+if(c==="users") r = usuarios.map(u=>u.user).join(", ");
+document.getElementById("term").innerHTML += "> "+c+"<br>"+r+"<br><br>";
+document.getElementById("cmd").value="";
+}
+
+/* CHAT */
+function chat(){
+let p = document.getElementById("pergunta").value;
+let r = "Não entendi";
+let pl = p.toLowerCase();
+if(pl.includes("oi")) r="Olá!";
+else if(pl.includes("hora")) r=new Date().toLocaleTimeString();
+else if(pl.includes("data")) r=new Date().toLocaleDateString();
+document.getElementById("chatArea").innerHTML += "Você: "+p+"<br>IA: "+r+"<br><br>";
+document.getElementById("pergunta").value="";
+}
+
+/* ABRIR LINK */
+function abrir(url){
+window.open(url);
+}
+
+/* MATRIX */
+let canvas=document.getElementById("matrix"), ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let letters="01", font=16, columns=canvas.width/font, drops=[];
+for(let x=0;x<columns;x++) drops[x]=1;
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#0f0"; ctx.font=font+"px monospace";
+for(let i=0;i<drops.length;i++){
+ctx.fillText(letters[Math.floor(Math.random()*letters.length)],i*font,drops[i]*font);
+drops[i]++;
+if(drops[i]*font>canvas.height && Math.random()>0.95) drops[i]=0;
+}}
+setInterval(draw,50);
+
+/* SNAKE */
+let s=document.getElementById("snake"), c=s.getContext("2d"), box=20, snake=[{x:200,y:200}],
+food={x:Math.floor(Math.random()*19)*box,y:Math.floor(Math.random()*19)*box}, d;
+document.addEventListener("keydown", dir);
+function dir(e){if(e.key==="ArrowLeft") d="LEFT"; if(e.key==="ArrowUp") d="UP"; if(e.key==="ArrowRight") d="RIGHT"; if(e.key==="ArrowDown") d="DOWN";}
+function drawSnake(){
+c.fillStyle="black"; c.fillRect(0,0,400,400);
+for(let i=0;i<snake.length;i++){c.fillStyle="#00ff9c"; c.fillRect(snake[i].x,snake[i].y,box,box);}
+c.fillStyle="red"; c.fillRect(food.x,food.y,box,box);
+let headX=snake[0].x, headY=snake[0].y;
+if(d==="LEFT") headX-=box; if(d==="UP") headY-=box; if(d==="RIGHT") headX+=box; if(d==="DOWN") headY+=box;
+if(headX===food.x && headY===food.y){food={x:Math.floor(Math.random()*19)*box,y:Math.floor(Math.random()*19)*box};}else{snake.pop();}
+let newHead={x:headX,y:headY}; snake.unshift(newHead);
+}
+setInterval(drawSnake,100);
+
+</script>
+</body>
+</html>
