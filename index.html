@@ -1,584 +1,279 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PORTAL JA</title>
-
+<title>PORTAL JA V50 ULTRA</title>
 <style>
-
-body{
-margin:0;
-font-family:monospace;
-background:black;
-color:#00ff9c;
-}
-
-header{
-background:#111;
-padding:15px;
-font-size:22px;
-position:fixed;
-width:100%;
-top:0;
-box-shadow:0 0 10px #00ff9c;
-z-index:10;
-}
-
-.sidebar{
-position:fixed;
-top:60px;
-left:0;
-width:220px;
-height:100%;
-background:#111;
-border-right:1px solid #00ff9c;
-}
-
-.sidebar li{
-list-style:none;
-padding:15px;
-cursor:pointer;
-}
-
-.sidebar li:hover{
-background:#00ff9c;
-color:black;
-}
-
-.section{
-margin-left:230px;
-padding:30px;
-display:none;
-}
-
-.active{
-display:block;
-}
-
-.card{
-border:1px solid #00ff9c;
-padding:15px;
-margin:10px;
-width:260px;
-display:inline-block;
-}
-
-input,textarea,select{
-width:100%;
-padding:8px;
-margin-bottom:10px;
-background:#111;
-border:1px solid #00ff9c;
-color:#00ff9c;
-}
-
-button{
-background:#111;
-border:1px solid #00ff9c;
-color:#00ff9c;
-padding:8px;
-cursor:pointer;
-}
-
-button:hover{
-background:#00ff9c;
-color:black;
-}
-
-iframe{
-border:1px solid #00ff9c;
-}
-
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-1;
-}
-
+body{margin:0;font-family:monospace;background:black;color:#00ff9c;}
+header{background:#111;padding:15px;font-size:22px;position:fixed;width:100%;top:0;box-shadow:0 0 10px #00ff9c;z-index:10}
+.sidebar{position:fixed;top:60px;left:0;width:220px;height:100%;background:#111;border-right:1px solid #00ff9c;}
+.sidebar li{list-style:none;padding:15px;cursor:pointer;}
+.sidebar li:hover{background:#00ff9c;color:black;}
+.section{margin-left:230px;padding:30px;display:none;}
+.active{display:block;}
+.card{border:1px solid #00ff9c;padding:15px;margin:10px;width:260px;display:inline-block;}
+input,select,textarea{width:100%;padding:8px;margin-bottom:10px;background:#111;border:1px solid #00ff9c;color:#00ff9c;}
+button{background:#111;border:1px solid #00ff9c;color:#00ff9c;padding:8px;cursor:pointer;}
+button:hover{background:#00ff9c;color:black;}
+iframe{border:1px solid #00ff9c;}
+canvas{position:fixed;top:0;left:0;z-index:-1;}
+#terminal{background:#000;height:200px;overflow:auto;padding:10px;border:1px solid #00ff9c;}
 </style>
-
 </head>
-
 <body>
 
 <canvas id="matrix"></canvas>
 
-<header>PORTAL JA</header>
+<header>PORTAL JA V50 ULTRA</header>
 
 <div class="sidebar">
-
 <li onclick="mostrar('login')">🔑 Login</li>
 <li onclick="mostrar('cliente')">👤 Cliente</li>
-<li id="menuAdmin" onclick="mostrar('admin')" style="display:none">⚙ Admin</li>
-<li onclick="mostrar('tools')">🛠 Ferramentas</li>
 <li onclick="mostrar('games')">🎮 Jogos</li>
+<li onclick="mostrar('tools')">🛠 Ferramentas</li>
 <li onclick="mostrar('yt')">🎵 YouTube MP3</li>
-<li onclick="mostrar('chat')">🤖 Chat</li>
-
+<li onclick="mostrar('terminalSec')">💻 Terminal</li>
+<li id="menuAdmin" onclick="mostrar('admin')" style="display:none">⚙ Admin</li>
 </div>
 
 <!-- LOGIN -->
-
 <div id="login" class="section active">
-
 <h2>Login</h2>
-
 <input id="user" placeholder="Usuário">
 <input id="senha" type="password" placeholder="Senha">
-
 <button onclick="login()">Entrar</button>
-
 <p id="status"></p>
 
-<hr>
-
-<h3>📩 Esqueci a senha</h3>
-
-<input id="userReset" placeholder="Seu usuário">
-
+<h3>Esqueci a senha</h3>
+<input id="userReset" placeholder="Digite seu usuário">
 <button onclick="solicitarSenha()">Enviar solicitação</button>
-
-<hr>
-
-<p>📞 Suporte: (64) 99989-0702</p>
-<p>Email: josealbertovilelalopes.tic@gmail.com</p>
-
 </div>
 
 <!-- CLIENTE -->
-
 <div id="cliente" class="section">
-
 <h2>Área do Cliente</h2>
-
 <div class="card">
-
-Minecraft
-
-<button onclick="abrir('https://classic.minecraft.net')">
-
-Abrir
-
-</button>
-
-</div>
-
-<div class="card">
-
 Mini Navegador
-
-<input id="urlNav">
-
+<input id="urlNav" placeholder="https://">
 <button onclick="nav()">Abrir</button>
-
 <iframe id="frame" style="width:100%;height:200px;"></iframe>
-
 </div>
-
-</div>
-
-<!-- ADMIN -->
-
-<div id="admin" class="section">
-
-<h2>Painel Admin</h2>
-
-<h3>Permissões</h3>
-
-<ul>
-<li>MASTER: criar, deletar e ver senha</li>
-<li>ADMIN: redefinir senha</li>
-<li>CLIENTE: sem acesso</li>
-</ul>
-
-<hr>
-
-<h3>Criar usuário</h3>
-
-<input id="novoUser">
-
-<input id="novaSenha">
-
-<select id="tipoUser">
-
-<option value="cliente">cliente</option>
-<option value="admin">admin</option>
-
-</select>
-
-<button onclick="criarUser()">Criar</button>
-
-<hr>
-
-<h3>Redefinir senha</h3>
-
-<input id="resetUser">
-
-<input id="resetSenha">
-
-<button onclick="resetar()">Redefinir</button>
-
-<hr>
-
-<h3>Deletar usuário</h3>
-
-<input id="delUser">
-
-<button onclick="deletar()">Deletar</button>
-
-<hr>
-
-<h3>Usuários</h3>
-
-<ul id="listaUsers"></ul>
-
-<hr>
-
-<h3>IPs</h3>
-
-<ul id="ips"></ul>
-
-<hr>
-
-<h3>Solicitações</h3>
-
-<ul id="solicitacoes"></ul>
-
-</div>
-
-<!-- FERRAMENTAS -->
-
-<div id="tools" class="section">
-
-<h2>Ferramentas</h2>
-
-<div class="card">
-
-IP
-
-<button onclick="ip()">Mostrar</button>
-
-<p id="ip"></p>
-
-</div>
-
-<div class="card">
-
-Calculadora
-
-<input id="n1">
-<input id="n2">
-
-<button onclick="calc('+')">+</button> <button onclick="calc('-')">-</button> <button onclick="calc('*')">*</button> <button onclick="calc('/')">/</button>
-
-<p id="res"></p>
-
-</div>
-
 </div>
 
 <!-- JOGOS -->
-
 <div id="games" class="section">
+<h2>Jogos</h2>
+<div class="card">
+Minecraft
+<button onclick="abrir('https://classic.minecraft.net')">Abrir Minecraft</button>
+</div>
+<div class="card">
+Snake
+<canvas id="snake" width="200" height="200"></canvas>
+</div>
+</div>
 
-<h2>Snake</h2>
-
-<canvas id="snake" width="400" height="400"></canvas>
-
+<!-- FERRAMENTAS -->
+<div id="tools" class="section">
+<h2>Ferramentas</h2>
+<div class="card">
+IP
+<button onclick="ip()">Mostrar</button>
+<p id="ip"></p>
+</div>
+<div class="card">
+Calculadora
+<input id="n1" placeholder="Número 1">
+<input id="n2" placeholder="Número 2">
+<button onclick="calc('+')">+</button>
+<button onclick="calc('-')">-</button>
+<button onclick="calc('*')">*</button>
+<button onclick="calc('/')">/</button>
+<p id="res"></p>
+</div>
 </div>
 
 <!-- YOUTUBE -->
-
 <div id="yt" class="section">
-
 <h2>YouTube → MP3</h2>
-
-<input id="ytlink">
-
+<input id="ytlink" placeholder="Cole o link">
 <button onclick="yt()">Converter</button>
-
 <p id="ytres"></p>
-
 </div>
 
-<!-- CHAT -->
+<!-- TERMINAL -->
+<div id="terminalSec" class="section">
+<h2>Terminal</h2>
+<div id="terminal"></div>
+<input id="cmd" placeholder="digite comando">
+<button onclick="runCmd()">Executar</button>
+</div>
 
-<div id="chat" class="section">
+<!-- ADMIN -->
+<div id="admin" class="section">
+<h2>Painel Admin</h2>
 
-<h2>Mini Chat</h2>
+<h3>Criar usuário</h3>
+<input id="novoUser" placeholder="Usuário">
+<input id="novaSenha" placeholder="Senha">
+<select id="tipoUser">
+<option value="cliente">cliente</option>
+<option value="admin">admin</option>
+</select>
+<button onclick="criarUser()">Criar</button>
 
-<div id="chatArea"></div>
+<h3>Mudar categoria</h3>
+<input id="catUser" placeholder="Usuário">
+<select id="novaCat">
+<option value="cliente">cliente</option>
+<option value="admin">admin</option>
+</select>
+<button onclick="mudarCategoria()">Alterar</button>
 
-<input id="msg">
+<h3>Deletar usuário</h3>
+<input id="delUser" placeholder="Usuário">
+<button onclick="deletar()">Deletar</button>
 
-<button onclick="enviar()">Enviar</button>
+<h3>Usuários ativos</h3>
+<ul id="listaUsers"></ul>
 
+<h3>IPs detectados</h3>
+<ul id="ips"></ul>
+
+<h3>Solicitações de senha</h3>
+<ul id="solicitacoes"></ul>
 </div>
 
 <script>
-
-let usuarios=[
-
+// Usuários e solicitações
+let usuarios=JSON.parse(localStorage.getItem("usuarios")) || [
 {user:"master",senha:"123",tipo:"master"},
-
 {user:"admin",senha:"123",tipo:"admin"},
-
 {user:"cliente",senha:"123",tipo:"cliente"}
+];
+let solicitacoes=JSON.parse(localStorage.getItem("solicitacoes"))||[];
+let usuarioLogado=null;
+let ips=[];
 
-]
+function salvar(){localStorage.setItem("usuarios",JSON.stringify(usuarios))}
+function salvarSolic(){localStorage.setItem("solicitacoes",JSON.stringify(solicitacoes))}
 
-let usuarioLogado=null
-
-let solicitacoes=[]
-
-let ips=[]
-
+// Mostrar seção
 function mostrar(id){
-
-if(id!="login" && !usuarioLogado){
-
-alert("Faça login")
-
-return
-
-}
-
+if(id!="login" && !usuarioLogado){alert("Faça login"); return;}
 document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
-
 document.getElementById(id).classList.add("active")
-
 }
 
+// Login
 function login(){
-
-let u=user.value
-
-let s=senha.value
-
-let achou=usuarios.find(x=>x.user==u && x.senha==s)
-
-if(!achou){
-
-status.innerText="login inválido"
-
-return
-
-}
-
-usuarioLogado=achou
-
-status.innerText="Bem vindo "+u
-
-if(achou.tipo!="cliente")
-
-menuAdmin.style.display="block"
-
-fetch("https://api.ipify.org?format=json")
-
-.then(r=>r.json())
-
-.then(d=>{
-
-ips.push(u+" - "+d.ip)
-
+let u=user.value,s=senha.value;
+let achou=usuarios.find(x=>x.user==u && x.senha==s);
+if(!achou){status.innerText="Login inválido"; return;}
+usuarioLogado=achou;
+status.innerText="Bem vindo "+u;
+if(achou.tipo!="cliente") menuAdmin.style.display="block";
+fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>{
+ips.push(u+" - "+d.ip);
 document.getElementById("ips").innerHTML=ips.map(x=>"<li>"+x+"</li>").join("")
-
-})
-
-atualizar()
-
+});
+atualizar();
 mostrar("cliente")
-
 }
 
+// Criar usuário
 function criarUser(){
-
-if(usuarioLogado.tipo!="master"){
-
-alert("apenas master")
-
-return
-
+if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
+usuarios.push({user:novoUser.value,senha:novaSenha.value,tipo:tipoUser.value});
+salvar(); atualizar();
 }
 
-usuarios.push({
-
-user:novoUser.value,
-
-senha:novaSenha.value,
-
-tipo:tipoUser.value
-
-})
-
-atualizar()
-
-}
-
-function resetar(){
-
-let u=usuarios.find(x=>x.user==resetUser.value)
-
-if(!u)return
-
-if(usuarioLogado.tipo=="admin" && u.tipo=="master"){
-
-alert("admin não pode")
-
-return
-
-}
-
-u.senha=resetSenha.value
-
-}
-
+// Deletar usuário
 function deletar(){
-
-if(usuarioLogado.tipo!="master")return
-
-usuarios=usuarios.filter(x=>x.user!=delUser.value)
-
-atualizar()
-
+if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
+usuarios=usuarios.filter(x=>x.user!=delUser.value);
+salvar(); atualizar();
 }
 
+// Mudar categoria
+function mudarCategoria(){
+if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
+let u=usuarios.find(x=>x.user==catUser.value);
+if(!u){alert("Usuário não encontrado"); return;}
+u.tipo=novaCat.value; salvar(); atualizar();
+}
+
+// Atualizar lista usuários
 function atualizar(){
-
-listaUsers.innerHTML=""
-
-usuarios.forEach(u=>{
-
-listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"
-
-})
-
+listaUsers.innerHTML="";
+usuarios.forEach(u=>{listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"})
 }
 
-function solicitarSenha(){
+// Abrir link
+function abrir(url){window.open(url)}
 
-solicitacoes.push(userReset.value)
+// Mini navegador
+function nav(){frame.src=urlNav.value}
 
-document.getElementById("solicitacoes").innerHTML=
+// IP
+function ip(){fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>{document.getElementById("ip").innerText=d.ip})}
 
-solicitacoes.map(x=>"<li>"+x+"</li>").join("")
-
-alert("Solicitação enviada")
-
-}
-
-function abrir(url){
-
-window.open(url)
-
-}
-
-function nav(){
-
-frame.src=urlNav.value
-
-}
-
-function ip(){
-
-fetch("https://api.ipify.org?format=json")
-
-.then(r=>r.json())
-
-.then(d=>{
-
-document.getElementById("ip").innerText=d.ip
-
-})
-
-}
-
+// Calculadora
 function calc(op){
-
-let a=parseFloat(n1.value)
-
-let b=parseFloat(n2.value)
-
-if(op=='+')res.innerText=a+b
-
-if(op=='-')res.innerText=a-b
-
-if(op=='*')res.innerText=a*b
-
-if(op=='/')res.innerText=a/b
-
+let a=parseFloat(n1.value),b=parseFloat(n2.value);
+if(op=='+') res.innerText=a+b;
+if(op=='-') res.innerText=a-b;
+if(op=='*') res.innerText=a*b;
+if(op=='/') res.innerText=a/b;
 }
 
+// YouTube → MP3
 function yt(){
-
-let link=ytlink.value
-
-let id=link.split("v=")[1]
-
-ytres.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar</a>"
-
+let link=ytlink.value.trim();
+if(!link){alert("Digite o link"); return;}
+let id=(link.includes("v="))?link.split("v=")[1]:link;
+ytres.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar MP3</a>";
 }
 
-function enviar(){
-
-chatArea.innerHTML+="<p>Você: "+msg.value+"</p>"
-
-chatArea.innerHTML+="<p>IA: Olá!</p>"
-
-msg.value=""
-
+// Terminal
+function runCmd(){
+let c=cmd.value.trim();
+if(c=="help") terminal.innerHTML+="<p>help users ip clear</p>";
+else if(c=="users") terminal.innerHTML+=usuarios.map(u=>"<p>"+u.user+"</p>").join("");
+else if(c=="ip") terminal.innerHTML+="<p>"+document.getElementById("ip").innerText+"</p>";
+else if(c=="clear") terminal.innerHTML="";
+cmd.value="";
 }
 
-/* MATRIX */
+// Solicitação senha
+function solicitarSenha(){
+let u=document.getElementById("userReset").value.trim();
+if(!u){alert("Digite o usuário"); return;}
+solicitacoes.push(u);
+salvarSolic();
+mostrarSolic();
+alert("Solicitação enviada para Admin/Master");
+}
+function mostrarSolic(){
+solicitacoes.sort();
+document.getElementById("solicitacoes").innerHTML=solicitacoes.map(x=>"<li>"+x+"</li>").join("");
+}
+mostrarSolic();
 
-let canvas=document.getElementById("matrix")
-
-let ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-
-canvas.height=window.innerHeight
-
-let letters="01ABCDEF"
-
-let font=16
-
-let columns=canvas.width/font
-
-let drops=[]
-
-for(let i=0;i<columns;i++)drops[i]=1
-
+// MATRIX
+let canvas=document.getElementById("matrix"), ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+let letters="0123456789ABCDEF", font=16, columns=Math.floor(canvas.width/font), drops=[];
+for(let i=0;i<columns;i++) drops[i]=1;
 function draw(){
-
-ctx.fillStyle="rgba(0,0,0,0.05)"
-
-ctx.fillRect(0,0,canvas.width,canvas.height)
-
-ctx.fillStyle="#0f0"
-
-ctx.font=font+"px monospace"
-
+ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#0f0"; ctx.font=font+"px monospace";
 for(let i=0;i<drops.length;i++){
-
-let text=letters[Math.floor(Math.random()*letters.length)]
-
-ctx.fillText(text,i*font,drops[i]*font)
-
-drops[i]++
-
-if(drops[i]*font>canvas.height && Math.random()>0.95)
-
-drops[i]=0
-
-}
-
-}
-
-setInterval(draw,50)
-
+ctx.fillText(letters[Math.floor(Math.random()*letters.length)],i*font,drops[i]*font);
+drops[i]++;
+if(drops[i]*font>canvas.height && Math.random()>0.95) drops[i]=0;
+}}
+setInterval(draw,50);
 </script>
 
 </body>
