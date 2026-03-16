@@ -139,6 +139,23 @@ PORTAL JA
 
 <p id="status"></p>
 
+<hr>
+
+<h3>🔐 Esqueci a senha</h3>
+
+<input id="userReset" placeholder="Digite seu usuário">
+
+<button onclick="solicitarSenha()">Enviar solicitação</button>
+
+<p>Solicitação enviada para Admin ou Master.</p>
+
+<hr>
+
+<h3>📞 Suporte</h3>
+
+<p>Telefone: (64) 99989-0702</p>
+<p>Email: josealbertovilelalopes.tic@gmail.com</p>
+
 </div>
 
 <!-- CLIENTE -->
@@ -202,7 +219,10 @@ Calculadora
 <input id="n1">
 <input id="n2">
 
-<button onclick="calc('+')">+</button> <button onclick="calc('-')">-</button> <button onclick="calc('*')">*</button> <button onclick="calc('/')">/</button>
+<button onclick="calc('+')">+</button>
+<button onclick="calc('-')">-</button>
+<button onclick="calc('*')">*</button>
+<button onclick="calc('/')">/</button>
 
 <p id="res"></p>
 
@@ -301,19 +321,14 @@ let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
 let usuarioLogado = null
 
 function salvar(){
-
 localStorage.setItem("usuarios",JSON.stringify(usuarios))
-
 }
 
 function mostrar(id){
 
 if(id!="login" && !usuarioLogado){
-
 alert("Faça login")
-
 return
-
 }
 
 document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
@@ -330,10 +345,8 @@ let s=senha.value
 let encontrado=usuarios.find(x=>x.user==u && x.senha==s)
 
 if(!encontrado){
-
 status.innerText="Login inválido"
 return
-
 }
 
 usuarioLogado=encontrado
@@ -342,9 +355,7 @@ document.getElementById("userLogado").innerText=
 "👤 "+encontrado.user+" ("+encontrado.tipo+")"
 
 if(encontrado.tipo!="cliente"){
-
 menuAdmin.style.display="block"
-
 }
 
 status.innerText="Bem-vindo"
@@ -355,26 +366,33 @@ mostrar("cliente")
 
 }
 
-function criarUsuario(){
+function solicitarSenha(){
 
-if(usuarioLogado.tipo!="master"){
+let u=document.getElementById("userReset").value
 
-alert("Apenas MASTER")
-
+if(!u){
+alert("Digite seu usuário")
 return
+}
+
+alert("Solicitação enviada para Admin/Master")
 
 }
 
-usuarios.push({
+function criarUsuario(){
 
+if(usuarioLogado.tipo!="master"){
+alert("Apenas MASTER")
+return
+}
+
+usuarios.push({
 user:novoUser.value,
 senha:novaSenha.value,
 tipo:tipoUser.value
-
 })
 
 salvar()
-
 atualizar()
 
 }
@@ -382,17 +400,13 @@ atualizar()
 function deletarUsuario(){
 
 if(usuarioLogado.tipo!="master"){
-
 alert("Apenas MASTER")
-
 return
-
 }
 
 usuarios=usuarios.filter(x=>x.user!=delUser.value)
 
 salvar()
-
 atualizar()
 
 }
@@ -400,27 +414,20 @@ atualizar()
 function mudarCategoria(){
 
 if(usuarioLogado.tipo!="master"){
-
 alert("Apenas MASTER")
-
 return
-
 }
 
 let u=usuarios.find(x=>x.user==catUser.value)
 
 if(!u){
-
 alert("Usuário não encontrado")
-
 return
-
 }
 
 u.tipo=novaCat.value
 
 salvar()
-
 atualizar()
 
 }
@@ -428,29 +435,20 @@ atualizar()
 function resetarSenha(){
 
 if(usuarioLogado.tipo=="cliente"){
-
 alert("Cliente não pode")
-
 return
-
 }
 
 let alvo=usuarios.find(x=>x.user==resetUser.value)
 
 if(!alvo){
-
 alert("Usuário não encontrado")
-
 return
-
 }
 
 if(usuarioLogado.tipo=="admin" && alvo.tipo=="master"){
-
 alert("Admin não pode resetar master")
-
 return
-
 }
 
 alvo.senha=novaReset.value
@@ -466,23 +464,17 @@ function atualizar(){
 listaUsers.innerHTML=""
 
 usuarios.forEach(u=>{
-
 listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"
-
 })
 
 }
 
 function abrir(url){
-
 window.open(url)
-
 }
 
 function abrirNav(){
-
 iframeNav.src=urlNav.value
-
 }
 
 function ip(){
@@ -492,9 +484,7 @@ fetch("https://api.ipify.org?format=json")
 .then(r=>r.json())
 
 .then(d=>{
-
 document.getElementById("ip").innerText=d.ip
-
 })
 
 }
@@ -516,11 +506,8 @@ function yt(){
 let link=linkYT.value.trim()
 
 if(!link){
-
 alert("Cole o link")
-
 return
-
 }
 
 let id=link.split("v=")[1]
@@ -532,17 +519,13 @@ ytRes.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar MP3</a
 /* MATRIX */
 
 let canvas=document.getElementById("matrix")
-
 let ctx=canvas.getContext("2d")
 
 canvas.width=window.innerWidth
-
 canvas.height=window.innerHeight
 
 let letters="0123456789ABCDEF"
-
 let font=16
-
 let columns=Math.floor(canvas.width/font)
 
 let drops=[]
@@ -552,29 +535,22 @@ for(let i=0;i<columns;i++) drops[i]=1
 function draw(){
 
 ctx.fillStyle="rgba(0,0,0,0.05)"
-
 ctx.fillRect(0,0,canvas.width,canvas.height)
 
 ctx.fillStyle="#0f0"
-
 ctx.font=font+"px monospace"
 
 for(let i=0;i<drops.length;i++){
 
 ctx.fillText(
-
 letters[Math.floor(Math.random()*letters.length)],
-
 i*font,
-
 drops[i]*font
-
 )
 
 drops[i]++
 
 if(drops[i]*font>canvas.height && Math.random()>0.95)
-
 drops[i]=0
 
 }
