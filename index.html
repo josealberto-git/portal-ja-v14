@@ -1,279 +1,588 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PORTAL JA V50 ULTRA</title>
+<title>PORTAL JA</title>
+
 <style>
-body{margin:0;font-family:monospace;background:black;color:#00ff9c;}
-header{background:#111;padding:15px;font-size:22px;position:fixed;width:100%;top:0;box-shadow:0 0 10px #00ff9c;z-index:10}
-.sidebar{position:fixed;top:60px;left:0;width:220px;height:100%;background:#111;border-right:1px solid #00ff9c;}
-.sidebar li{list-style:none;padding:15px;cursor:pointer;}
-.sidebar li:hover{background:#00ff9c;color:black;}
-.section{margin-left:230px;padding:30px;display:none;}
-.active{display:block;}
-.card{border:1px solid #00ff9c;padding:15px;margin:10px;width:260px;display:inline-block;}
-input,select,textarea{width:100%;padding:8px;margin-bottom:10px;background:#111;border:1px solid #00ff9c;color:#00ff9c;}
-button{background:#111;border:1px solid #00ff9c;color:#00ff9c;padding:8px;cursor:pointer;}
-button:hover{background:#00ff9c;color:black;}
-iframe{border:1px solid #00ff9c;}
-canvas{position:fixed;top:0;left:0;z-index:-1;}
-#terminal{background:#000;height:200px;overflow:auto;padding:10px;border:1px solid #00ff9c;}
+
+body{
+margin:0;
+font-family:monospace;
+background:black;
+color:#00ff9c;
+}
+
+header{
+background:#111;
+padding:15px;
+font-size:22px;
+box-shadow:0 0 10px #00ff9c;
+position:fixed;
+width:100%;
+top:0;
+z-index:100;
+}
+
+#userLogado{
+float:right;
+font-size:16px;
+}
+
+.sidebar{
+position:fixed;
+top:60px;
+left:0;
+width:220px;
+height:100%;
+background:#111;
+border-right:1px solid #00ff9c;
+}
+
+.sidebar li{
+list-style:none;
+padding:15px;
+cursor:pointer;
+}
+
+.sidebar li:hover{
+background:#00ff9c;
+color:black;
+}
+
+.section{
+margin-left:230px;
+padding:30px;
+display:none;
+}
+
+.active{
+display:block;
+}
+
+.card{
+border:1px solid #00ff9c;
+padding:15px;
+margin:10px;
+width:250px;
+display:inline-block;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin-bottom:10px;
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+}
+
+button{
+background:#111;
+border:1px solid #00ff9c;
+color:#00ff9c;
+padding:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#00ff9c;
+color:black;
+}
+
+iframe{
+border:1px solid #00ff9c;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
 </style>
+
 </head>
+
 <body>
 
 <canvas id="matrix"></canvas>
 
-<header>PORTAL JA V50 ULTRA</header>
+<header>
+PORTAL JA
+<span id="userLogado"></span>
+</header>
 
 <div class="sidebar">
-<li onclick="mostrar('login')">🔑 Login</li>
-<li onclick="mostrar('cliente')">👤 Cliente</li>
-<li onclick="mostrar('games')">🎮 Jogos</li>
-<li onclick="mostrar('tools')">🛠 Ferramentas</li>
-<li onclick="mostrar('yt')">🎵 YouTube MP3</li>
-<li onclick="mostrar('terminalSec')">💻 Terminal</li>
-<li id="menuAdmin" onclick="mostrar('admin')" style="display:none">⚙ Admin</li>
+
+<li onclick="mostrar('login')">Login</li>
+<li onclick="mostrar('cliente')">Cliente</li>
+<li onclick="mostrar('games')">Jogos</li>
+<li onclick="mostrar('tools')">Ferramentas</li>
+<li onclick="mostrar('yt')">YouTube MP3</li>
+<li id="menuAdmin" onclick="mostrar('admin')" style="display:none">Admin</li>
+
 </div>
 
 <!-- LOGIN -->
+
 <div id="login" class="section active">
+
 <h2>Login</h2>
+
 <input id="user" placeholder="Usuário">
 <input id="senha" type="password" placeholder="Senha">
+
 <button onclick="login()">Entrar</button>
+
 <p id="status"></p>
 
-<h3>Esqueci a senha</h3>
-<input id="userReset" placeholder="Digite seu usuário">
-<button onclick="solicitarSenha()">Enviar solicitação</button>
 </div>
 
 <!-- CLIENTE -->
+
 <div id="cliente" class="section">
-<h2>Área do Cliente</h2>
+
+<h2>Área Cliente</h2>
+
 <div class="card">
-Mini Navegador
-<input id="urlNav" placeholder="https://">
-<button onclick="nav()">Abrir</button>
-<iframe id="frame" style="width:100%;height:200px;"></iframe>
+
+Mini navegador
+
+<input id="urlNav" placeholder="https://site.com">
+
+<button onclick="abrirNav()">Abrir</button>
+
+<iframe id="iframeNav" style="width:100%;height:200px;"></iframe>
+
 </div>
+
 </div>
 
 <!-- JOGOS -->
+
 <div id="games" class="section">
+
 <h2>Jogos</h2>
+
 <div class="card">
+
 Minecraft
-<button onclick="abrir('https://classic.minecraft.net')">Abrir Minecraft</button>
+
+<button onclick="abrir('https://classic.minecraft.net')">
+Abrir Minecraft
+</button>
+
 </div>
-<div class="card">
-Snake
-<canvas id="snake" width="200" height="200"></canvas>
-</div>
+
 </div>
 
 <!-- FERRAMENTAS -->
+
 <div id="tools" class="section">
+
 <h2>Ferramentas</h2>
+
 <div class="card">
+
 IP
+
 <button onclick="ip()">Mostrar</button>
+
 <p id="ip"></p>
+
 </div>
+
 <div class="card">
+
 Calculadora
-<input id="n1" placeholder="Número 1">
-<input id="n2" placeholder="Número 2">
-<button onclick="calc('+')">+</button>
-<button onclick="calc('-')">-</button>
-<button onclick="calc('*')">*</button>
-<button onclick="calc('/')">/</button>
+
+<input id="n1">
+<input id="n2">
+
+<button onclick="calc('+')">+</button> <button onclick="calc('-')">-</button> <button onclick="calc('*')">*</button> <button onclick="calc('/')">/</button>
+
 <p id="res"></p>
+
 </div>
+
 </div>
 
 <!-- YOUTUBE -->
-<div id="yt" class="section">
-<h2>YouTube → MP3</h2>
-<input id="ytlink" placeholder="Cole o link">
-<button onclick="yt()">Converter</button>
-<p id="ytres"></p>
-</div>
 
-<!-- TERMINAL -->
-<div id="terminalSec" class="section">
-<h2>Terminal</h2>
-<div id="terminal"></div>
-<input id="cmd" placeholder="digite comando">
-<button onclick="runCmd()">Executar</button>
+<div id="yt" class="section">
+
+<h2>YouTube → MP3</h2>
+
+<input id="linkYT" placeholder="Cole o link">
+
+<button onclick="yt()">Converter</button>
+
+<p id="ytRes"></p>
+
 </div>
 
 <!-- ADMIN -->
+
 <div id="admin" class="section">
+
 <h2>Painel Admin</h2>
 
-<h3>Criar usuário</h3>
+<h3>Criar usuário (MASTER)</h3>
+
 <input id="novoUser" placeholder="Usuário">
+
 <input id="novaSenha" placeholder="Senha">
+
 <select id="tipoUser">
-<option value="cliente">cliente</option>
-<option value="admin">admin</option>
+
+<option value="cliente">Cliente</option>
+<option value="admin">Admin</option>
+<option value="master">Master</option>
+
 </select>
-<button onclick="criarUser()">Criar</button>
+
+<button onclick="criarUsuario()">Criar</button>
+
+<hr>
 
 <h3>Mudar categoria</h3>
+
 <input id="catUser" placeholder="Usuário">
+
 <select id="novaCat">
-<option value="cliente">cliente</option>
-<option value="admin">admin</option>
+
+<option value="cliente">Cliente</option>
+<option value="admin">Admin</option>
+<option value="master">Master</option>
+
 </select>
+
 <button onclick="mudarCategoria()">Alterar</button>
 
-<h3>Deletar usuário</h3>
-<input id="delUser" placeholder="Usuário">
-<button onclick="deletar()">Deletar</button>
+<hr>
 
-<h3>Usuários ativos</h3>
+<h3>Deletar usuário</h3>
+
+<input id="delUser" placeholder="Usuário">
+
+<button onclick="deletarUsuario()">Deletar</button>
+
+<hr>
+
+<h3>Resetar senha</h3>
+
+<input id="resetUser" placeholder="Usuário">
+
+<input id="novaReset" placeholder="Nova senha">
+
+<button onclick="resetarSenha()">Resetar</button>
+
+<hr>
+
+<h3>Usuários existentes</h3>
+
 <ul id="listaUsers"></ul>
 
-<h3>IPs detectados</h3>
-<ul id="ips"></ul>
-
-<h3>Solicitações de senha</h3>
-<ul id="solicitacoes"></ul>
 </div>
 
 <script>
-// Usuários e solicitações
-let usuarios=JSON.parse(localStorage.getItem("usuarios")) || [
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
+
 {user:"master",senha:"123",tipo:"master"},
 {user:"admin",senha:"123",tipo:"admin"},
 {user:"cliente",senha:"123",tipo:"cliente"}
-];
-let solicitacoes=JSON.parse(localStorage.getItem("solicitacoes"))||[];
-let usuarioLogado=null;
-let ips=[];
 
-function salvar(){localStorage.setItem("usuarios",JSON.stringify(usuarios))}
-function salvarSolic(){localStorage.setItem("solicitacoes",JSON.stringify(solicitacoes))}
+]
 
-// Mostrar seção
+let usuarioLogado = null
+
+function salvar(){
+
+localStorage.setItem("usuarios",JSON.stringify(usuarios))
+
+}
+
 function mostrar(id){
-if(id!="login" && !usuarioLogado){alert("Faça login"); return;}
+
+if(id!="login" && !usuarioLogado){
+
+alert("Faça login")
+
+return
+
+}
+
 document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
+
 document.getElementById(id).classList.add("active")
+
 }
 
-// Login
 function login(){
-let u=user.value,s=senha.value;
-let achou=usuarios.find(x=>x.user==u && x.senha==s);
-if(!achou){status.innerText="Login inválido"; return;}
-usuarioLogado=achou;
-status.innerText="Bem vindo "+u;
-if(achou.tipo!="cliente") menuAdmin.style.display="block";
-fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>{
-ips.push(u+" - "+d.ip);
-document.getElementById("ips").innerHTML=ips.map(x=>"<li>"+x+"</li>").join("")
-});
-atualizar();
+
+let u=user.value
+let s=senha.value
+
+let encontrado=usuarios.find(x=>x.user==u && x.senha==s)
+
+if(!encontrado){
+
+status.innerText="Login inválido"
+return
+
+}
+
+usuarioLogado=encontrado
+
+document.getElementById("userLogado").innerText=
+"👤 "+encontrado.user+" ("+encontrado.tipo+")"
+
+if(encontrado.tipo!="cliente"){
+
+menuAdmin.style.display="block"
+
+}
+
+status.innerText="Bem-vindo"
+
+atualizar()
+
 mostrar("cliente")
+
 }
 
-// Criar usuário
-function criarUser(){
-if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
-usuarios.push({user:novoUser.value,senha:novaSenha.value,tipo:tipoUser.value});
-salvar(); atualizar();
+function criarUsuario(){
+
+if(usuarioLogado.tipo!="master"){
+
+alert("Apenas MASTER")
+
+return
+
 }
 
-// Deletar usuário
-function deletar(){
-if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
-usuarios=usuarios.filter(x=>x.user!=delUser.value);
-salvar(); atualizar();
+usuarios.push({
+
+user:novoUser.value,
+senha:novaSenha.value,
+tipo:tipoUser.value
+
+})
+
+salvar()
+
+atualizar()
+
 }
 
-// Mudar categoria
+function deletarUsuario(){
+
+if(usuarioLogado.tipo!="master"){
+
+alert("Apenas MASTER")
+
+return
+
+}
+
+usuarios=usuarios.filter(x=>x.user!=delUser.value)
+
+salvar()
+
+atualizar()
+
+}
+
 function mudarCategoria(){
-if(usuarioLogado.tipo!="master"){alert("Apenas master"); return;}
-let u=usuarios.find(x=>x.user==catUser.value);
-if(!u){alert("Usuário não encontrado"); return;}
-u.tipo=novaCat.value; salvar(); atualizar();
+
+if(usuarioLogado.tipo!="master"){
+
+alert("Apenas MASTER")
+
+return
+
 }
 
-// Atualizar lista usuários
+let u=usuarios.find(x=>x.user==catUser.value)
+
+if(!u){
+
+alert("Usuário não encontrado")
+
+return
+
+}
+
+u.tipo=novaCat.value
+
+salvar()
+
+atualizar()
+
+}
+
+function resetarSenha(){
+
+if(usuarioLogado.tipo=="cliente"){
+
+alert("Cliente não pode")
+
+return
+
+}
+
+let alvo=usuarios.find(x=>x.user==resetUser.value)
+
+if(!alvo){
+
+alert("Usuário não encontrado")
+
+return
+
+}
+
+if(usuarioLogado.tipo=="admin" && alvo.tipo=="master"){
+
+alert("Admin não pode resetar master")
+
+return
+
+}
+
+alvo.senha=novaReset.value
+
+salvar()
+
+alert("Senha alterada")
+
+}
+
 function atualizar(){
-listaUsers.innerHTML="";
-usuarios.forEach(u=>{listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"})
+
+listaUsers.innerHTML=""
+
+usuarios.forEach(u=>{
+
+listaUsers.innerHTML+="<li>"+u.user+" ("+u.tipo+")</li>"
+
+})
+
 }
 
-// Abrir link
-function abrir(url){window.open(url)}
+function abrir(url){
 
-// Mini navegador
-function nav(){frame.src=urlNav.value}
+window.open(url)
 
-// IP
-function ip(){fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>{document.getElementById("ip").innerText=d.ip})}
+}
 
-// Calculadora
+function abrirNav(){
+
+iframeNav.src=urlNav.value
+
+}
+
+function ip(){
+
+fetch("https://api.ipify.org?format=json")
+
+.then(r=>r.json())
+
+.then(d=>{
+
+document.getElementById("ip").innerText=d.ip
+
+})
+
+}
+
 function calc(op){
-let a=parseFloat(n1.value),b=parseFloat(n2.value);
-if(op=='+') res.innerText=a+b;
-if(op=='-') res.innerText=a-b;
-if(op=='*') res.innerText=a*b;
-if(op=='/') res.innerText=a/b;
+
+let a=parseFloat(n1.value)
+let b=parseFloat(n2.value)
+
+if(op=="+") res.innerText=a+b
+if(op=="-") res.innerText=a-b
+if(op=="*") res.innerText=a*b
+if(op=="/") res.innerText=a/b
+
 }
 
-// YouTube → MP3
 function yt(){
-let link=ytlink.value.trim();
-if(!link){alert("Digite o link"); return;}
-let id=(link.includes("v="))?link.split("v=")[1]:link;
-ytres.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar MP3</a>";
+
+let link=linkYT.value.trim()
+
+if(!link){
+
+alert("Cole o link")
+
+return
+
 }
 
-// Terminal
-function runCmd(){
-let c=cmd.value.trim();
-if(c=="help") terminal.innerHTML+="<p>help users ip clear</p>";
-else if(c=="users") terminal.innerHTML+=usuarios.map(u=>"<p>"+u.user+"</p>").join("");
-else if(c=="ip") terminal.innerHTML+="<p>"+document.getElementById("ip").innerText+"</p>";
-else if(c=="clear") terminal.innerHTML="";
-cmd.value="";
+let id=link.split("v=")[1]
+
+ytRes.innerHTML="<a target='_blank' href='https://ytmp3.nu/"+id+"'>Baixar MP3</a>"
+
 }
 
-// Solicitação senha
-function solicitarSenha(){
-let u=document.getElementById("userReset").value.trim();
-if(!u){alert("Digite o usuário"); return;}
-solicitacoes.push(u);
-salvarSolic();
-mostrarSolic();
-alert("Solicitação enviada para Admin/Master");
-}
-function mostrarSolic(){
-solicitacoes.sort();
-document.getElementById("solicitacoes").innerHTML=solicitacoes.map(x=>"<li>"+x+"</li>").join("");
-}
-mostrarSolic();
+/* MATRIX */
 
-// MATRIX
-let canvas=document.getElementById("matrix"), ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-let letters="0123456789ABCDEF", font=16, columns=Math.floor(canvas.width/font), drops=[];
-for(let i=0;i<columns;i++) drops[i]=1;
+let canvas=document.getElementById("matrix")
+
+let ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+
+canvas.height=window.innerHeight
+
+let letters="0123456789ABCDEF"
+
+let font=16
+
+let columns=Math.floor(canvas.width/font)
+
+let drops=[]
+
+for(let i=0;i<columns;i++) drops[i]=1
+
 function draw(){
-ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="#0f0"; ctx.font=font+"px monospace";
+
+ctx.fillStyle="rgba(0,0,0,0.05)"
+
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#0f0"
+
+ctx.font=font+"px monospace"
+
 for(let i=0;i<drops.length;i++){
-ctx.fillText(letters[Math.floor(Math.random()*letters.length)],i*font,drops[i]*font);
-drops[i]++;
-if(drops[i]*font>canvas.height && Math.random()>0.95) drops[i]=0;
-}}
-setInterval(draw,50);
+
+ctx.fillText(
+
+letters[Math.floor(Math.random()*letters.length)],
+
+i*font,
+
+drops[i]*font
+
+)
+
+drops[i]++
+
+if(drops[i]*font>canvas.height && Math.random()>0.95)
+
+drops[i]=0
+
+}
+
+}
+
+setInterval(draw,50)
+
 </script>
 
 </body>
